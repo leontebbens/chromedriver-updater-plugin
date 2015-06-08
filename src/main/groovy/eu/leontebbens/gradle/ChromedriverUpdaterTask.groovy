@@ -1,4 +1,4 @@
-package eu.leontebbens
+package eu.leontebbens.gradle
 
 
 import groovyx.net.http.HTTPBuilder
