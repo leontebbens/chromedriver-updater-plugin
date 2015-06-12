@@ -1,9 +1,10 @@
 plugins {
-    id "com.jfrog.bintray" version "1.1"
+    id "com.jfrog.bintray" version "1.2"
 }
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
+apply plugin: 'idea'
 
 repositories {
     mavenLocal()
@@ -16,10 +17,32 @@ dependencies {
     compile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.2"
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.4'
+}
+
+jar {
+    // include license into jar
+    from 'LICENSE.txt'
+}
+
+// package source into a jar file
+task packageSources(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+// define artifacts for upload
+artifacts {
+    archives jar
+    archives packageSources
+}
+
 bintray {
+    // to publish run gradle with task bintrayUpload
     user = this.hasProperty('bintrayUser') ? bintrayUser : ''
     key = this.hasProperty('bintrayApiKey') ? bintrayApiKey : ''
-    publications = ['mavenStuff']
+    configurations = ['archives']
     dryRun = false
     publish = !project.version.endsWith('-SNAPSHOT')
     pkg {
