@@ -1,10 +1,3 @@
-Todo
-
-* deze file
-* example code
-* commit
-
-
 Chromedriver Updater plugin
 ===========================
 
