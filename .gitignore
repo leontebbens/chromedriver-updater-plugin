@@ -1,0 +1,9 @@
+.gradle/
+build/
+bin/
+.externalToolBuilders/
+.settings/
+.classpath
+.project
+.idea/workspace.xml
+.iml

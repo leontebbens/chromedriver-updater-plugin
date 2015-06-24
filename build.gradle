@@ -38,6 +38,47 @@ artifacts {
     archives packageSources
 }
 
+
+def configurePom(def pom) {
+    // ensure correct artifact ID
+    pom.artifactId = 'chromedriver-updater-plugin'
+
+    // pom file details
+    pom.project {
+        name 'chromedriver-updater-plugin'
+        packaging 'jar'
+        description 'Checks and downloads latest chromedriver for selenium'
+        url 'https://github.com/leontebbens/chromedriver-updater-plugin'
+
+        scm {
+            url 'scm:git:git://github.com/leontebbens/chromedriver-updater-plugin.git'
+            connection 'scm:git:git://github.com/leontebbens/chromedriver-updater-plugin.git'
+            developerConnection 'scm:git:git://github.com/leontebbens/chromedriver-updater-plugin.git'
+        }
+
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution 'repo'
+            }
+        }
+
+        developers {
+            developer {
+                id 'leontebbens'
+                name 'Leon Tebbens'
+            }
+        }
+    }
+}
+
+install {
+    repositories.mavenInstaller {
+        configurePom(pom)
+    }
+}
+
 bintray {
     // to publish run gradle with task bintrayUpload
     user = this.hasProperty('bintrayUser') ? bintrayUser : ''
@@ -54,7 +95,7 @@ bintray {
         issueTrackerUrl = "$githubUrl/issues"
         vcsUrl = "${githubUrl}.git"
         licenses = ['Apache-2.0']
-        labels = ['gradle', 'selenium', 'plugin', 'chromedriver']
+        labels = ['gradle', 'selenium', 'plugin', 'chromedriver', 'jenkins']
         publicDownloadNumbers = true
         version {
             name = project.version

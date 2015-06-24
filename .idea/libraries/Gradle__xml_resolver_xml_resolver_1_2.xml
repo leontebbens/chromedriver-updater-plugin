@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: xml-resolver:xml-resolver:1.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/xml-resolver/xml-resolver/1.2/xml-resolver-1.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

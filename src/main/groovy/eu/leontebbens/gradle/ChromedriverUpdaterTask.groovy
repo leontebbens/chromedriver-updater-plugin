@@ -37,23 +37,24 @@ class ChromedriverUpdaterTask extends DefaultTask {
     private isChromedriverUptodate()
     {
         if (latestVersion == localVersion) {
-            println("Great! Your chromedriver is up to date (version $localVersion)")
+            println("Great! Your Chromedriver is up to date (version $localVersion)")
         } else {
-            throw new AssertionError("A new chromedriver is available: $latestVersion")
+            throw new AssertionError("A new Chromedriver is available: $latestVersion")
         }
     }
     
     private updateChromedriver() {
         if (latestVersion == localVersion) {
-            println("Your chromedriver is already up to date (version $localVersion)")
+            println("Great! Your Chromedriver is already up to date (version $localVersion)")
         } else {
             def latestDriverBaseUrl = chromedriverSiteUrl + "/" + latestVersion
-            println("Downloading from $chromedriverSiteUrl to " + project.buildDir)
+            println("Downloading Chromedriver $latestVersion from $chromedriverSiteUrl ...")
             new File(project.buildDir.toString()).mkdir()
             downloadFile(chromedriverSiteUrl + "/LATEST_RELEASE", project.buildDir.toString() + File.separator + "LATEST_RELEASE")
             downloadAndUnzip(latestDriverBaseUrl + File.separator + "chromedriver_mac32.zip", project.buildDir.toString() + File.separator + "mac")
             downloadAndUnzip(latestDriverBaseUrl + File.separator + "chromedriver_win32.zip", project.buildDir.toString() + File.separator + "win")
             downloadAndUnzip(latestDriverBaseUrl + File.separator + "chromedriver_linux64.zip", project.buildDir.toString() + File.separator + "linux")
+            println("Download complete: the latest Chromedriver is available in " + project.buildDir.toString())
         }
     }
 
@@ -66,7 +67,7 @@ class ChromedriverUpdaterTask extends DefaultTask {
               http.request(GET,TEXT) { req ->
                 headers.'User-Agent' = 'GroovyHTTPBuilder/1.0'
                 response.success = { resp, reader -> ver = reader.getText() 
-                  logger.info("Latest available chromedriver version is " + ver)
+                  logger.info("Latest available Chromedriver version is " + ver)
                 }
                 response.failure = { resp ->
                     getLogger().error("Error reading file " + versionFileUrl)
@@ -85,7 +86,7 @@ class ChromedriverUpdaterTask extends DefaultTask {
             def file = new File(project.buildDir.toString() + File.separator + "LATEST_RELEASE")
             if (file.exists()) {
                 ver = file.text
-                logger.info("Local chromedriver version is " + ver)
+                logger.info("Local Chromedriver version is " + ver)
             }
          } catch (e) {
             getLogger().error("Error reading file: ", e)
