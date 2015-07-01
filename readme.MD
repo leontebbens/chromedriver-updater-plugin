@@ -65,3 +65,12 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+
+Questions
+---------
+Raise an issue on [Github](Gitbub.com/leontebbens) or [Tweet me](twitter.com/leontebbens).
+Suggestions are welcome too!
+
+Léon Tebbens
+
