@@ -1,5 +1,5 @@
 plugins {
-    id "com.jfrog.bintray" version "1.2"
+    id "com.gradle.plugin-publish" version "0.9.0"
 }
 
 apply plugin: 'groovy'
@@ -79,27 +79,19 @@ install {
     }
 }
 
-bintray {
-    // to publish run gradle with task bintrayUpload
-    user = this.hasProperty('bintrayUser') ? bintrayUser : ''
-    key = this.hasProperty('bintrayApiKey') ? bintrayApiKey : ''
-    configurations = ['archives']
-    dryRun = false
-    publish = !project.version.endsWith('-SNAPSHOT')
-    pkg {
-        def githubUrl = 'https://github.com/leontebbens/chromedriver-updater-plugin'
-        repo = 'maven'
-        name = 'eu.leontebbens.gradle.chromedriver-updater-plugin'
-        desc = 'Checks and downloads latest chromedriver for selenium'
-        websiteUrl = githubUrl
-        issueTrackerUrl = "$githubUrl/issues"
-        vcsUrl = "${githubUrl}.git"
-        licenses = ['Apache-2.0']
-        labels = ['gradle', 'selenium', 'plugin', 'chromedriver', 'jenkins']
-        publicDownloadNumbers = true
-        version {
-            name = project.version
-            attributes = ['gradle-plugin': "eu.leontebbens.gradle:${project.group}:chromedriver-updater-plugin"]
+
+pluginBundle {
+    website = 'https://github.com/leontebbens/chromedriver-updater-plugin'
+    vcsUrl = 'https://github.com/leontebbens/chromedriver-updater-plugin.git'
+    description = 'Auto-update Chromedriver for Selenium with this plugin'
+    tags = ['gradle', 'selenium', 'plugin', 'chromedriver', 'jenkins']
+
+    plugins {
+        chromedriverUpdatePlugin {
+            id = 'eu.leontebbens.gradle.chromedriver-updater'
+            displayName = 'Chromedriver Updater plugin'
         }
     }
 }
+
+
