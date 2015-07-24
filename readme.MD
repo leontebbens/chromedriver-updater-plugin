@@ -11,13 +11,11 @@ It should work with newer versions and on other operations systems as well.
 Apply plugin configuration
 --------------------------
 
-### Gradle 2.1 and higher
-
-Put this in your `build.gradle`:
+Put this in your `build.gradle` (Gradle 2.1 or higher):
 
 ```groovy
 plugins {
-    id "eu.leontebbens.gradle.chromedriver-updater" version "1.1"
+    id "eu.leontebbens.gradle.chromedriver-updater" version "1.2"
 }
 ```
 
@@ -36,6 +34,12 @@ task myTask(type: ChromedriverUpdaterTask) {
 
 Next run `gradlew myTask` and the drivers will be downloaded to the directory `build`
 
+
+### Proxy
+When you are behind a proxy, use the http.proxyHost and http.proxyPort JVM parameters
+```
+gradlew myTask -Dhttp.proxyHost=myproxy.com -Dhttp.proxyPort=8080
+```
 
 
 Just checking

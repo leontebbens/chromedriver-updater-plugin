@@ -33,7 +33,7 @@ class ChromedriverUpdaterTask extends DefaultTask {
             updateChromedriver()
         }
     }
-    
+
     private isChromedriverUptodate()
     {
         if (latestVersion == localVersion) {
@@ -64,7 +64,24 @@ class ChromedriverUpdaterTask extends DefaultTask {
         getLogger().info("Reading file " + versionFileUrl)
         try {
             def http = new HTTPBuilder(versionFileUrl)
-              http.request(GET,TEXT) { req ->
+            def httpProxyHost = System.properties.'http.proxyHost'
+            def httpProxyPort = System.properties.'http.proxyPort'
+            if (httpProxyHost==null || httpProxyPort==null)
+                getLogger().info("not using http-proxy because -Dhttp.proxyHost and -Dhttp.proxyPort are not defined")
+            else {
+                getLogger().info("using http proxy " + httpProxyHost + ":" + httpProxyPort)
+                http.setProxy(httpProxyHost, httpProxyPort as int, 'http')
+            }
+            // https proxy config results in Peer not Authenticated error, and googlecode is not https so I disbled this for now
+//            def httpsProxyHost = System.properties.'https.proxyHost'
+//            def httpsProxyPort = System.properties.'https.proxyPort'
+//            if (httpsProxyHost==null && httpsProxyPort==null)
+//                getLogger().info("not using https-proxy because -Dhttps.proxyHost and -Dhttps.proxyPort are not defined")
+//            else {
+//                getLogger().info("using https proxy " + httpsProxyHost + ":" + httpsProxyPort)
+//                http.setProxy(httpsProxyHost, httpsProxyPort as int, 'https')
+//            }
+            http.request(GET,TEXT) { req ->
                 headers.'User-Agent' = 'GroovyHTTPBuilder/1.0'
                 response.success = { resp, reader -> ver = reader.getText() 
                   logger.info("Latest available Chromedriver version is " + ver)
@@ -72,7 +89,7 @@ class ChromedriverUpdaterTask extends DefaultTask {
                 response.failure = { resp ->
                     getLogger().error("Error reading file " + versionFileUrl)
                 }
-              }
+            }
         } catch (e) {
             getLogger().error("Error reading file: ", e)
         }
