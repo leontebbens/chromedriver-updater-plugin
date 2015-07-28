@@ -27,12 +27,9 @@ After you applied the plugin configuration (see above) you can use the `Chromedr
 
 ```groovy
 import eu.leontebbens.gradle.ChromedriverUpdaterTask
-
-task myTask(type: ChromedriverUpdaterTask) {
-}
 ```
 
-Next run `gradlew myTask` and the drivers will be downloaded to the directory `build`
+Next run `gradlew updateChromedriver` and the drivers will be downloaded to the directory `build`
 
 
 ### Proxy
@@ -45,17 +42,9 @@ gradlew myTask -Dhttp.proxyHost=myproxy.com -Dhttp.proxyPort=8080
 Just checking
 -------------
 
-Set property `checkOnly=true` if you only want to check for a new Chromedriver version. No driver files are downloaded.
+Run `gradlew checkChromedriver` if you only want to check for a new Chromedriver version. No driver files are downloaded.
 This can be used in a daily job in [Jenkins](http://jenkins-ci.org) to inform people by e-mail of a new Chromedriver versions.
 Therefore the gradle build will FAIL when a new Chromedriver version is available.
-
-```groovy
-import eu.leontebbens.gradle.ChromedriverUpdaterTask
-
-task myTask(type: ChromedriverUpdaterTask) {
-    checkOnly = true
-}
-```
 
 
 License
