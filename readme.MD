@@ -23,7 +23,7 @@ plugins {
 Usage
 -----
 
-After you applied the plugin configuration (see above) you can use the `ChromedriverUpdaterTask` task as follows in your `build.gradle`:
+After you applied the plugin configuration (see above) you apply the plugin as follows in your `build.gradle`:
 
 ```groovy
 apply plugin: "eu.leontebbens.gradle.chromedriver-updater"
