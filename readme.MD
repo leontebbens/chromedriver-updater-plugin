@@ -11,19 +11,13 @@ It should work with newer versions and on other operations systems as well.
 Apply plugin configuration
 --------------------------
 
-Put this in your `build.gradle` (Gradle 2.1 or higher):
+Put these in your `build.gradle` (Gradle 2.1 or higher):
 
 ```groovy
 plugins {
     id "eu.leontebbens.gradle.chromedriver-updater" version "1.2"
 }
 ```
-
-
-Usage
------
-
-After you applied the plugin configuration (see above) you apply the plugin as follows in your `build.gradle`:
 
 ```groovy
 apply plugin: "eu.leontebbens.gradle.chromedriver-updater"
