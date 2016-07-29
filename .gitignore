@@ -7,3 +7,4 @@ bin/
 .project
 .idea/workspace.xml
 .iml
+.idea/
