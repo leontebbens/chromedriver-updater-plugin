@@ -14,6 +14,7 @@ class ChromedriverUpdaterTask extends DefaultTask {
     def latestVersion = "unknown"
     def localVersion = "unknown"
     def chromedriverSiteUrl = "http://chromedriver.storage.googleapis.com"
+    def targetDir = "${project.buildDir}"
 
     ChromedriverUpdaterTask() {
         setGroup("Build")
@@ -28,6 +29,11 @@ class ChromedriverUpdaterTask extends DefaultTask {
             isChromedriverUptodate()
         } else {
             updateChromedriver()
+            def osName = System.getProperty("os.name").toLowerCase()
+            def arch = osName.contains("windows") ? "win" : osName.contains("mac") ? "mac" : "linux"
+            def driver = "$targetDir/$arch/chromedriver${arch.equals('win') ? '.exe' : ''}"
+            println("webdriver.chrome.driver=$driver")
+            System.setProperty("webdriver.chrome.driver", "$driver")
         }
     }
 
@@ -46,11 +52,11 @@ class ChromedriverUpdaterTask extends DefaultTask {
             def latestDriverBaseUrl = "$chromedriverSiteUrl/$latestVersion"
             println("Downloading Chromedriver $latestVersion from $chromedriverSiteUrl ...")
             new File(project.buildDir.toString()).mkdir()
-            downloadFile("$chromedriverSiteUrl/LATEST_RELEASE", "${project.buildDir}/LATEST_RELEASE")
-            downloadAndUnzip("$latestDriverBaseUrl/chromedriver_mac32.zip", "${project.buildDir}/mac")
-            downloadAndUnzip("$latestDriverBaseUrl/chromedriver_win32.zip", "${project.buildDir}/win")
-            downloadAndUnzip("$latestDriverBaseUrl/chromedriver_linux64.zip", "${project.buildDir}/linux")
-            println("Download complete: the latest Chromedriver is available in ${project.buildDir}")
+            downloadFile("$chromedriverSiteUrl/LATEST_RELEASE", "$targetDir/LATEST_RELEASE")
+            downloadAndUnzip("$latestDriverBaseUrl/chromedriver_mac32.zip", "$targetDir/mac")
+            downloadAndUnzip("$latestDriverBaseUrl/chromedriver_win32.zip", "$targetDir/win")
+            downloadAndUnzip("$latestDriverBaseUrl/chromedriver_linux64.zip", "$targetDir/linux")
+            println("Download complete: the latest Chromedriver is available in $targetDir")
         }
     }
 
@@ -89,7 +95,7 @@ class ChromedriverUpdaterTask extends DefaultTask {
         def ver = ""
 
         try {
-            def file = new File("${project.buildDir}/LATEST_RELEASE")
+            def file = new File("$targetDir/LATEST_RELEASE")
             if (file.exists()) {
                 ver = file.text
                 logger.info("Local Chromedriver version is $ver")
