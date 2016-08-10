@@ -8,3 +8,5 @@ bin/
 .idea/workspace.xml
 .iml
 .idea/
+gradle.properties
+
