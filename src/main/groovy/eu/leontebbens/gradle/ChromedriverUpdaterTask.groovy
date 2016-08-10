@@ -1,25 +1,23 @@
 package eu.leontebbens.gradle
 
-import groovyx.net.http.HTTPBuilder
+import de.undercouch.gradle.tasks.download.DownloadAction
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-
-import java.util.zip.ZipInputStream
-
-import static groovyx.net.http.ContentType.TEXT
-import static groovyx.net.http.Method.GET
 
 class ChromedriverUpdaterTask extends DefaultTask {
     def checkOnly = false
     def latestVersion = "unknown"
     def localVersion = "unknown"
     def chromedriverSiteUrl = "http://chromedriver.storage.googleapis.com"
+    def targetDir = "${project.buildDir}/chromedriver"
+    def LOCAL_VER = "$targetDir/LOCAL_VERSION"
 
     ChromedriverUpdaterTask() {
         setGroup("Build")
         setDescription("Checks the latest release of the selenium chromedriver files on the googlecode website. And downloads them when a new release is available")
     }
 
+    @SuppressWarnings("GroovyUnusedDeclaration")
     @TaskAction
     def chromedriverAction() {
         latestVersion = getLatestVersion();
@@ -28,6 +26,11 @@ class ChromedriverUpdaterTask extends DefaultTask {
             isChromedriverUptodate()
         } else {
             updateChromedriver()
+            def osName = System.getProperty("os.name").toLowerCase()
+            def arch = osName.contains("windows") ? "win" : osName.contains("mac") ? "mac" : "linux"
+            def driver = "$targetDir/$arch/chromedriver${arch.equals('win') ? '.exe' : ''}"
+            println("webdriver.chrome.driver=$driver")
+            System.setProperty("webdriver.chrome.driver", "$driver")
         }
     }
 
@@ -44,54 +47,29 @@ class ChromedriverUpdaterTask extends DefaultTask {
             println("Great! Your Chromedriver is already up to date (version $localVersion)")
         } else {
             def latestDriverBaseUrl = "$chromedriverSiteUrl/$latestVersion"
-            println("Downloading Chromedriver $latestVersion from $chromedriverSiteUrl ...")
+
             new File(project.buildDir.toString()).mkdir()
-            downloadFile("$chromedriverSiteUrl/LATEST_RELEASE", "${project.buildDir}/LATEST_RELEASE")
-            downloadAndUnzip("$latestDriverBaseUrl/chromedriver_mac32.zip", "${project.buildDir}/mac")
-            downloadAndUnzip("$latestDriverBaseUrl/chromedriver_win32.zip", "${project.buildDir}/win")
-            downloadAndUnzip("$latestDriverBaseUrl/chromedriver_linux64.zip", "${project.buildDir}/linux")
-            println("Download complete: the latest Chromedriver is available in ${project.buildDir}")
+            downloadFile("$chromedriverSiteUrl/LATEST_RELEASE", LOCAL_VER)
+            downloadAndUnzip("$latestDriverBaseUrl", "chromedriver_mac32.zip", "$targetDir/mac")
+            downloadAndUnzip("$latestDriverBaseUrl", "chromedriver_win32.zip", "$targetDir/win")
+            downloadAndUnzip("$latestDriverBaseUrl", "chromedriver_linux64.zip", "$targetDir/linux")
+            println("Download complete: the latest Chromedriver is available in $targetDir")
         }
     }
 
     private String getLatestVersion() {
-        def versionFileUrl = "$chromedriverSiteUrl/LATEST_RELEASE"
-        def ver = ""
-        getLogger().info("Reading file $versionFileUrl")
-        try {
-            def http = new HTTPBuilder(versionFileUrl)
-            def httpProxyHost = System.properties.'http.proxyHost'
-            def httpProxyPort = System.properties.'http.proxyPort'
-            if (httpProxyHost == null || httpProxyPort == null)
-                getLogger().info("not using http-proxy because -Dhttp.proxyHost and -Dhttp.proxyPort are not defined")
-            else {
-                getLogger().info("using http proxy " + httpProxyHost + ":" + httpProxyPort)
-                http.setProxy(httpProxyHost, httpProxyPort as int, 'http')
-            }
-
-            http.request(GET, TEXT) { req ->
-                headers.'User-Agent' = 'GroovyHTTPBuilder/1.0'
-                response.success = { resp, reader ->
-                    ver = reader.text.trim()
-                    logger.info("Latest available Chromedriver version is $ver")
-                }
-                response.failure = { resp ->
-                    getLogger().error("Error reading file $versionFileUrl")
-                }
-            }
-        } catch (e) {
-            getLogger().error("Error reading file", e)
-        }
-        ver
+        def target = new File("$targetDir/LATEST_RELEASE")
+        downloadFile("$chromedriverSiteUrl/LATEST_RELEASE", target)
+        return target.text.trim()
     }
 
     private String getLocalVersion() {
         def ver = ""
 
         try {
-            def file = new File("${project.buildDir}/LATEST_RELEASE")
+            def file = new File(LOCAL_VER)
             if (file.exists()) {
-                ver = file.text
+                ver = file.text.trim()
                 logger.info("Local Chromedriver version is $ver")
             }
         } catch (e) {
@@ -100,33 +78,23 @@ class ChromedriverUpdaterTask extends DefaultTask {
         ver
     }
 
-    private void downloadFile(def remoteUrl, def localUrl) {
-        def file = new FileOutputStream(localUrl)
-        def out = new BufferedOutputStream(file)
-        out << new URL(remoteUrl).openStream()
-        out.close()
+    private void downloadFile(def remoteUrl, def target) {
+        println "Downloading $remoteUrl to $target"
+        DownloadAction da = new DownloadAction(project)
+        da.dest(target)
+        da.src(remoteUrl)
+        da.onlyIfNewer(true)
+        try {
+            da.execute()
+        } catch (Exception e) {
+            getLogger().error("unable to download $remoteUrl, ${e.getMessage()}")
+            throw e
+        }
     }
 
-    private void downloadAndUnzip(def remoteZipURL, def localDir) {
-        def zipEntry
-        String fileContent = (remoteZipURL).toURL().withInputStream { s ->
-            new ZipInputStream(s).with { zipStream ->
-                new StringWriter().with { stringWriter ->
-                    while (zipEntry = zipStream.nextEntry) {
-                        if (zipEntry.name.startsWith('chromedriver')) {
-                            stringWriter << zipStream
-                            break
-                        }
-                        zipStream.closeEntry()
-                    }
-                    stringWriter.toString()
-                }
-            }
-        }
-        new File(localDir).mkdir()
-        def file = new FileOutputStream("$localDir/${zipEntry.name}")
-        def out = new BufferedOutputStream(file)
-        out << fileContent
-        out.close()
+    private void downloadAndUnzip(def remoteZipURL, def zipName, String localDir) {
+        downloadFile("$remoteZipURL/$zipName", "$targetDir/zipName")
+        new File(localDir).mkdirs()
+        new AntBuilder().unzip(src: "$targetDir/zipName", dest: localDir)
     }
 }
