@@ -49,6 +49,7 @@ class ChromedriverUpdaterTask extends DefaultTask {
             def latestDriverBaseUrl = "$chromedriverSiteUrl/$latestVersion"
 
             new File(project.buildDir.toString()).mkdir()
+            println("Downloading Chromedriver $latestVersion from $latestDriverBaseUrl ...")
             downloadFile("$chromedriverSiteUrl/LATEST_RELEASE", LOCAL_VER)
             downloadAndUnzip("$latestDriverBaseUrl", "chromedriver_mac32.zip", "$targetDir/mac")
             downloadAndUnzip("$latestDriverBaseUrl", "chromedriver_win32.zip", "$targetDir/win")
@@ -79,11 +80,11 @@ class ChromedriverUpdaterTask extends DefaultTask {
     }
 
     private void downloadFile(def remoteUrl, def target) {
-        println "Downloading $remoteUrl to $target"
+        logger.info("Downloading $remoteUrl to $target")
         DownloadAction da = new DownloadAction(project)
         da.dest(target)
         da.src(remoteUrl)
-        da.onlyIfNewer(true)
+        da.onlyIfNewer(false)
         try {
             da.execute()
         } catch (Exception e) {
@@ -93,8 +94,8 @@ class ChromedriverUpdaterTask extends DefaultTask {
     }
 
     private void downloadAndUnzip(def remoteZipURL, def zipName, String localDir) {
-        downloadFile("$remoteZipURL/$zipName", "$targetDir/zipName")
+        downloadFile("$remoteZipURL/$zipName", "$targetDir/tempZip")
         new File(localDir).mkdirs()
-        new AntBuilder().unzip(src: "$targetDir/zipName", dest: localDir)
+        new AntBuilder().unzip(src: "$targetDir/tempZip", dest: localDir)
     }
 }
