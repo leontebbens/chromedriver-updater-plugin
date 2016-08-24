@@ -23,7 +23,8 @@ plugins {
 apply plugin: "eu.leontebbens.gradle.chromedriver-updater"
 ```
 
-Next run `gradlew updateChromedriver` and the drivers will be downloaded to the directory `build`
+Next run `gradlew updateChromedriver` and the drivers will be downloaded to the directory `build`. 
+System property `webdriver.chrome.driver` is also set to this directory, more info [here](https://sites.google.com/a/chromium.org/chromedriver/getting-started)
 
 
 ### Proxy
