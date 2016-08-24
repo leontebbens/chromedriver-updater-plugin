@@ -23,8 +23,10 @@ plugins {
 apply plugin: "eu.leontebbens.gradle.chromedriver-updater"
 ```
 
-Next run `gradlew updateChromedriver` and the drivers will be downloaded to the directory `build`. 
-System property `webdriver.chrome.driver` is also set to this directory, more info [here](https://sites.google.com/a/chromium.org/chromedriver/getting-started)
+Next run `gradlew updateChromedriver` and the drivers will be downloaded to the directory `build`, the
+System property `webdriver.chrome.driver` is set (more info [here](https://sites.google.com/a/chromium.org/chromedriver/getting-started)).
+ 
+If you use `gradlew updateChromedriver test` your tests will use the downloaded driver.
 
 
 ### Proxy
