@@ -23,10 +23,25 @@ plugins {
 apply plugin: "eu.leontebbens.gradle.chromedriver-updater"
 ```
 
-Next run `gradlew updateChromedriver` and the drivers will be downloaded to the directory `build`, the
-System property `webdriver.chrome.driver` is set (more info [here](https://sites.google.com/a/chromium.org/chromedriver/getting-started)).
- 
-If you use `gradlew updateChromedriver test` your tests will use the downloaded driver.
+Next run `gradlew updateChromedriver` and the drivers will be downloaded to the directory `build`.
+
+
+### Example integration test
+
+To use the downloaded driver in your tests:
+```
+task integrationTest(type: Test, dependsOn: updateChromedriver) {
+    systemProperties = [
+            'webdriver.chrome.driver' : "${updateChromedriver.driverLocation}"
+    ] 
+
+   // your testing code here ...
+
+}
+``` 
+And run `gradlew updateChromedriver integrationTest` to use the downloaded driver in you Integration Tests.
+
+More about the property `webdriver.chrome.driver` [here](https://sites.google.com/a/chromium.org/chromedriver/getting-started).
 
 
 ### Proxy
