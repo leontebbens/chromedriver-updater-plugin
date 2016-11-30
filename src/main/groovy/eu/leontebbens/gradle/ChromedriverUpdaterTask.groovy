@@ -28,6 +28,7 @@ class ChromedriverUpdaterTask extends DefaultTask {
         } else {
             updateChromedriver()
             println("webdriver.chrome.driver=$driverLocation")
+            ant.chmod(perm: "755", file: driverLocation)
         }
     }
 
