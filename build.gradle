@@ -7,7 +7,7 @@ apply plugin: 'maven'
 apply plugin: 'idea'
 
 group = "eu.leontebbens.gradle"
-version = "1.6"
+version = "1.6.1"
 
 repositories {
     mavenLocal()

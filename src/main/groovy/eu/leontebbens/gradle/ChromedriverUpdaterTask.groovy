@@ -5,6 +5,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 class ChromedriverUpdaterTask extends DefaultTask {
+    def majorVersion = ""
     def checkOnly = false
     def latestVersion = "unknown"
     def localVersion = "unknown"
@@ -42,6 +43,11 @@ class ChromedriverUpdaterTask extends DefaultTask {
         return driverLocation
     }
 
+    private String getLatestReleaseDownloadUrl() {
+        def postfix = !majorVersion.isEmpty() ? "_$majorVersion" : ""
+        return "$chromedriverSiteUrl/LATEST_RELEASE$postfix"
+    }
+
     private String calcArch() {
         def osName = System.getProperty("os.name").toLowerCase()
         return osName.contains("windows") ? "win" : osName.contains("mac") ? "mac" : "linux"
@@ -63,7 +69,7 @@ class ChromedriverUpdaterTask extends DefaultTask {
 
             new File(project.buildDir.toString()).mkdir()
             println("Downloading Chromedriver $latestVersion from $latestDriverBaseUrl ...")
-            downloadFile("$chromedriverSiteUrl/LATEST_RELEASE", LOCAL_VER)
+            downloadFile(getLatestReleaseDownloadUrl(), LOCAL_VER)
             def arch = calcArch()
             def bit = arch.equals('win') ? '32' : '64'
             downloadAndUnzip("$latestDriverBaseUrl", "chromedriver_${arch}${bit}.zip", "$targetDir/${arch}")
@@ -73,7 +79,7 @@ class ChromedriverUpdaterTask extends DefaultTask {
 
     private String getLatestVersion() {
         def target = new File("$targetDir/LATEST_RELEASE")
-        downloadFile("$chromedriverSiteUrl/LATEST_RELEASE", target)
+        downloadFile(getLatestReleaseDownloadUrl(), target)
         return target.text.trim()
     }
 
