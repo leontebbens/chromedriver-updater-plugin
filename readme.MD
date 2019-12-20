@@ -26,7 +26,7 @@ apply plugin: "eu.leontebbens.gradle.chromedriver-updater"
 Next run `gradlew updateChromedriver` and the drivers will be downloaded to the directory `build`.
 
 ### Configuration
-Plugin allows you to download the latest chromedriver version according to the [LATEST_RELEASE](http://chromedriver.storage.googleapis.com/LATEST_RELEASE). To configure the major chromedriver version, add these lines to your build script file:
+Plugin allows you to download the latest chromedriver version according to the [latest version selection](https://sites.google.com/a/chromium.org/chromedriver/downloads/version-selection). To configure the major chromedriver version, add these lines to your build script file:
 ```groovy
 chromedriver {
   majorVersion = "78"
