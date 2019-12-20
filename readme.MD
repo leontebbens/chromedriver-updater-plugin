@@ -15,7 +15,7 @@ Put these in your `build.gradle` (Gradle 3.2.1 or higher):
 
 ```groovy
 plugins {
-    id "eu.leontebbens.gradle.chromedriver-updater" version "1.6"
+    id "eu.leontebbens.gradle.chromedriver-updater" version "1.6.1"
 }
 ```
 
@@ -25,6 +25,13 @@ apply plugin: "eu.leontebbens.gradle.chromedriver-updater"
 
 Next run `gradlew updateChromedriver` and the drivers will be downloaded to the directory `build`.
 
+### Configuration
+Plugin allows you to download the latest chromedriver version according to the [LATEST_RELEASE](http://chromedriver.storage.googleapis.com/LATEST_RELEASE). To configure the major chromedriver version, add these lines to your build script file:
+```groovy
+chromedriver {
+  majorVersion = "78"
+}
+```
 
 ### Example integration test
 
