@@ -4,14 +4,14 @@ Chromedriver Updater plugin
 This is a simple plugin for [Gradle](http://www.gradle.org/) to keep your [Chromedriver](https://sites.google.com/a/chromium.org/chromedriver/) for [Selenium](http://seleniumhq.org) up to date.
 It checks the [google code website](http://chromedriver.storage.googleapis.com/index.html) for a new version of the Chromedriver, and downloads it to the build directory.
 
-The plugin has been successfully tested with Gradle 3.2.1 on Mac OSX and Windows 10.
+The plugin has been successfully tested with Gradle 4.10.3 on Mac OS and Windows 10.
 It should work with newer versions and on other operations systems as well.
 
 
 Apply plugin configuration
 --------------------------
 
-Put these in your `build.gradle` (Gradle 3.2.1 or higher):
+Put these in your `build.gradle` (Gradle 4.10.3 or higher):
 
 ```groovy
 plugins {
