@@ -2,16 +2,25 @@ package eu.leontebbens.gradle
 
 import de.undercouch.gradle.tasks.download.DownloadAction
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
 class ChromedriverUpdaterTask extends DefaultTask {
+    @Input
     def majorVersion = ""
+    @Input
     def checkOnly = false
     def latestVersion = "unknown"
     def localVersion = "unknown"
+    @Internal
     def chromedriverSiteUrl = "http://chromedriver.storage.googleapis.com"
+    @Input
     def targetDir = "${project.buildDir}/chromedriver"
+    @OutputFile
     def LOCAL_VER = "$targetDir/LOCAL_VERSION"
+    @OutputFile
     def driverLocation = getDriverLocation();
 
     ChromedriverUpdaterTask() {
