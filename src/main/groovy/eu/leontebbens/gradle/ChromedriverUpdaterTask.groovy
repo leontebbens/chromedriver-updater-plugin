@@ -81,8 +81,17 @@ class ChromedriverUpdaterTask extends DefaultTask {
             downloadFile(getLatestReleaseDownloadUrl(), LOCAL_VER)
             def arch = calcArch()
             def bit = arch.equals('win') ? '32' : '64'
-            downloadAndUnzip("$latestDriverBaseUrl", "chromedriver_${arch}${bit}.zip", "$targetDir/${arch}")
+            def osArchSuffix = getOsArchDependentSuffix(arch)
+            downloadAndUnzip("$latestDriverBaseUrl", "chromedriver_${arch}${bit}${osArchSuffix}.zip", "$targetDir/${arch}")
             println("Download complete: the latest Chromedriver is available in $targetDir")
+        }
+    }
+
+    private String getOsArchDependentSuffix(String arch) {
+        if (arch == "mac" && System.getProperty("os.arch") == "aarch64") {
+            return "_m1"
+        } else {
+            return ""
         }
     }
 
