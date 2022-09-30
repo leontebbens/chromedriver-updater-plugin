@@ -89,7 +89,7 @@ class ChromedriverUpdaterTask extends DefaultTask {
 
     private String getOsArchDependentSuffix(String arch) {
         if (arch == "mac" && System.getProperty("os.arch") == "aarch64") {
-            return "_m1"
+            return "_arm64"
         } else {
             return ""
         }
