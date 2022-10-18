@@ -15,7 +15,7 @@ Put these in your `build.gradle` (Gradle 4.10.3 or higher):
 
 ```groovy
 plugins {
-    id "eu.leontebbens.gradle.chromedriver-updater" version "1.6.2"
+    id "eu.leontebbens.gradle.chromedriver-updater" version "1.8.0"
 }
 ```
 
