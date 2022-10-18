@@ -57,7 +57,7 @@ class ChromedriverUpdaterTask extends DefaultTask {
         return "$chromedriverSiteUrl/LATEST_RELEASE$postfix"
     }
 
-    private String calcArch() {
+    private static String calcArch() {
         def osName = System.getProperty("os.name").toLowerCase()
         return osName.contains("windows") ? "win" : osName.contains("mac") ? "mac" : "linux"
     }
@@ -80,19 +80,15 @@ class ChromedriverUpdaterTask extends DefaultTask {
             println("Downloading Chromedriver $latestVersion from $latestDriverBaseUrl ...")
             downloadFile(getLatestReleaseDownloadUrl(), LOCAL_VER)
             def arch = calcArch()
-            def bit = arch.equals('win') ? '32' : '64'
-            def osArchSuffix = getOsArchDependentSuffix(arch)
-            downloadAndUnzip("$latestDriverBaseUrl", "chromedriver_${arch}${bit}${osArchSuffix}.zip", "$targetDir/${arch}")
+            downloadAndUnzip("$latestDriverBaseUrl", filename(), "$targetDir/${arch}")
             println("Download complete: the latest Chromedriver is available in $targetDir")
         }
     }
 
-    private String getOsArchDependentSuffix(String arch) {
-        if (arch == "mac" && System.getProperty("os.arch") == "aarch64") {
-            return "_m1"
-        } else {
-            return ""
-        }
+    private static String filename() {
+        def arch = calcArch()
+        def osArchSuffix = arch == "mac" && System.getProperty("os.arch") == "aarch64" ? "_arm64" : arch.equals('win') ? '32' : '64'
+        return "chromedriver_${arch}${osArchSuffix}.zip"
     }
 
     private String getLatestVersion() {
